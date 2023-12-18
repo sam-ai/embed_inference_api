@@ -1,5 +1,17 @@
 FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04
 
+### Set up user with permissions
+# Set up a new user named "user" with user ID 1000
+RUN useradd -m -u 1000 user
+
+# Switch to the "user" user
+USER user
+
+
+# Set home to the user's home directory
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+
 # Use Python 3.11 for better Python perf
 # Update the package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
@@ -32,8 +44,11 @@ ENV PYTHONUNBUFFERED=1
 
 # Set the working directory. /app is mounted to the container with -v, 
 # but we want to have the right cwd for uvicorn command below
-RUN mkdir /app
+RUN mkdir $HOME/app
 # WORKDIR /app
+
+# Copy the current directory contents into the container at $HOME/app setting the owner to the user
+COPY --chown=user . $HOME/app
 
 # # Copy the app code and requirements filed
 # COPY . /app
@@ -57,6 +72,11 @@ WORKDIR /app
 RUN --mount=type=cache,target=/root/.cache/pip \
         pip3 install -r requirements.txt
 
+### Update permissions for the app
+USER root
+RUN chmod 777 ~/app/*
+USER user
+
 # Expose the FastAPI port
 EXPOSE 7860
 
@@ -64,6 +84,6 @@ EXPOSE 7860
 # CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "14000", "--limit-concurrency", "1000"]
 RUN python3 download.py
 
-RUN chmod 755 models
+# RUN chmod 755 models
 
 CMD ["python3", "app.py", "--host=0.0.0.0", "--port=7860", "--model_path=models/BAAI/bge-small-en-v1.5", "--num_workers=2"]
