@@ -1,17 +1,5 @@
 FROM nvidia/cuda:11.7.1-cudnn8-runtime-ubuntu20.04
 
-### Set up user with permissions
-# Set up a new user named "user" with user ID 1000
-RUN useradd -m -u 1000 user
-
-# Switch to the "user" user
-USER user
-
-
-# Set home to the user's home directory
-ENV HOME=/home/user \
-    PATH=/home/user/.local/bin:$PATH
-
 # Use Python 3.11 for better Python perf
 # Update the package lists and install necessary dependencies
 RUN apt-get update && apt-get install -y \
@@ -42,6 +30,18 @@ ENV PYTHONUNBUFFERED=1
 # RUN apt-get update && \
 #     apt-get install -y python3-pip
 
+### Set up user with permissions
+# Set up a new user named "user" with user ID 1000
+RUN useradd -m -u 1000 user
+
+# Switch to the "user" user
+USER user
+
+
+# Set home to the user's home directory
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+
 # Set the working directory. /app is mounted to the container with -v, 
 # but we want to have the right cwd for uvicorn command below
 RUN mkdir $HOME/app
@@ -63,7 +63,7 @@ COPY ./utils /app/utils
 COPY ./app.py /app/app.py
 COPY ./download.py /app/download.py
 
-WORKDIR /app
+WORKDIR $HOME/app
 
 
 # Install the app dependencies
