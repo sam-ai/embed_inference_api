@@ -54,14 +54,14 @@ COPY --chown=user . $HOME/app
 # COPY . /app
 # COPY requirements.txt .
 # WORKDIR $PYSETUP_PATH
-COPY ./requirements.txt  /app
+COPY ./requirements.txt  $HOME/app
 
 
-COPY ./utils /app/utils
+COPY ./utils $HOME/app/utils
 # COPY ./static /app/static
 # COPY ./templates /app/templates
-COPY ./app.py /app/app.py
-COPY ./download.py /app/download.py
+COPY ./app.py $HOME/app/app.py
+COPY ./download.py $HOME/app/download.py
 
 WORKDIR $HOME/app
 
