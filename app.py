@@ -80,9 +80,9 @@ print_arguments(args)
 # assert os.path.exists(args.model_path), f"{args.model_path}"
 # 
 if args.use_gpu:
-    model = SentenceTransformer(args.model_path, device="cuda", compute_type="float16")
+    model = SentenceTransformer(args.model_path, device="cuda", compute_type="float16", cache_folder=".")
 else:
-    model = SentenceTransformer(args.model_path, device='cpu')
+    model = SentenceTransformer(args.model_path, device='cpu', cache_folder=".")
 
 
 # 
