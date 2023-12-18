@@ -70,9 +70,9 @@ print_arguments(args)
 assert os.path.exists(args.model_path), f"{args.model_path}"
 # 
 if args.use_gpu:
-    model = SentenceTransformer(args.model_path, device="cuda", compute_type="float16", cache_folder=".")
+    model = SentenceTransformer(args.model_path, device="cuda", compute_type="float16")
 else:
-    model = SentenceTransformer(args.model_path, device='cpu', cache_folder=".")
+    model = SentenceTransformer(args.model_path, device='cpu')
 
 
 app = FastAPI(title="embedding Inference")

@@ -46,7 +46,7 @@ COPY ./utils /app/utils
 # COPY ./static /app/static
 # COPY ./templates /app/templates
 COPY ./app.py /app/app.py
-# COPY ./download.py /app/download.py
+COPY ./download.py /app/download.py
 
 WORKDIR /app
 
