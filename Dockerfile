@@ -64,4 +64,6 @@ EXPOSE 7860
 # CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "14000", "--limit-concurrency", "1000"]
 RUN python3 download.py
 
+RUN chmod 755 /models
+
 CMD ["python3", "app.py", "--host=0.0.0.0", "--port=7860", "--model_path=models/BAAI/bge-small-en-v1.5", "--num_workers=2"]
