@@ -83,12 +83,12 @@ app = FastAPI(title="embedding Inference")
 
 @app.post("/embed")
 async def api_embed(
-            textA: str = Body("text1", description="", embed=True),
-            textB: str = Body("text2", description="", embed=True),
+            text1: str = Body("text1", description="", embed=True),
+            text2: str = Body("text2", description="", embed=True),
         ):
 
-    q_embeddings = model.encode(textA, normalize_embeddings=True)
-    p_embeddings = model.encode(textB, normalize_embeddings=True)
+    q_embeddings = model.encode(text1, normalize_embeddings=True)
+    p_embeddings = model.encode(text2, normalize_embeddings=True)
 
     scores = q_embeddings @ p_embeddings.T
     print(scores)
