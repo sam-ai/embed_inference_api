@@ -80,6 +80,13 @@ app = FastAPI(title="embedding Inference")
 # templates = Jinja2Templates(directory="templates")
 # model_semaphore = None
 
+def similarity_score(textA, textB):
+    em_test = model.encode(
+        [textA, textB],
+        normalize_embeddings=True
+    )
+    return em_test[0] @ em_test[1].T
+
 
 @app.post("/embed")
 async def api_embed(
@@ -87,10 +94,7 @@ async def api_embed(
             text2: str = Body("text2", description="", embed=True),
         ):
 
-    q_embeddings = model.encode(text1, normalize_embeddings=True)
-    p_embeddings = model.encode(text2, normalize_embeddings=True)
-
-    scores = q_embeddings @ p_embeddings.T
+    scores = similarity_score(text1, text2)
     print(scores)
     scores = scores.tolist()
 
