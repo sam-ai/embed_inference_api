@@ -10,42 +10,43 @@ from fastapi import FastAPI, Body, Request
 # from fastapi.responses import StreamingResponse
 # from starlette.staticfiles import StaticFiles
 # from starlette.templating import Jinja2Templates
+from utils.utils import add_arguments, print_arguments
 from sentence_transformers import SentenceTransformer, models
 
 
 
-def print_arguments(args):
-    print("-----------  Configuration Arguments -----------")
-    for arg, value in vars(args).items():
-        print("%s: %s" % (arg, value))
-    print("------------------------------------------------")
+# def print_arguments(args):
+#     print("-----------  Configuration Arguments -----------")
+#     for arg, value in vars(args).items():
+#         print("%s: %s" % (arg, value))
+#     print("------------------------------------------------")
 
 
-def strtobool(val):
-    val = val.lower()
-    if val in ('y', 'yes', 't', 'true', 'on', '1'):
-        return True
-    elif val in ('n', 'no', 'f', 'false', 'off', '0'):
-        return False
-    else:
-        raise ValueError("invalid truth value %r" % (val,))
+# def strtobool(val):
+#     val = val.lower()
+#     if val in ('y', 'yes', 't', 'true', 'on', '1'):
+#         return True
+#     elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+#         return False
+#     else:
+#         raise ValueError("invalid truth value %r" % (val,))
 
-def str_none(val):
-    if val == 'None':
-        return None
-    else:
-        return val
+# def str_none(val):
+#     if val == 'None':
+#         return None
+#     else:
+#         return val
 
-def add_arguments(argname, type, default, help, argparser, **kwargs):
-    type = strtobool if type == bool else type
-    type = str_none if type == str else type
-    argparser.add_argument(
-        "--" + argname,
-        default=default,
-        type=type,
-        help=help + ' Default: %(default)s.',
-        **kwargs
-    )
+# def add_arguments(argname, type, default, help, argparser, **kwargs):
+#     type = strtobool if type == bool else type
+#     type = str_none if type == str else type
+#     argparser.add_argument(
+#         "--" + argname,
+#         default=default,
+#         type=type,
+#         help=help + ' Default: %(default)s.',
+#         **kwargs
+#     )
 
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
@@ -110,6 +111,11 @@ def similarity_score(model, textA, textB):
     return em_test[0] @ em_test[1].T
 
 
+@app.get("/")
+async def index(request: Request):
+    return {"detail": "API is Active !!"}
+
+
 @app.post("/bge_embed")
 async def api_bge_embed(
             text1: str = Body("text1", description="", embed=True),
@@ -137,9 +143,6 @@ async def api_tsdae_embed(
     return ret
 
 
-@app.get("/")
-async def index(request: Request):
-    return {"detail": "API is Active !!"}
 
 
 if __name__ == '__main__':
